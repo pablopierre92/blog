@@ -1,0 +1,51 @@
+package br.edu.unirios.blog.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import br.edu.unirios.blog.entity.Postagem;
+import br.edu.unirios.blog.entity.interfaces.RepositorioPostagem;
+
+@Service
+public class ServicoPostagem {
+	
+	@Autowired
+	private RepositorioPostagem repo;
+	
+	public List<Postagem> buscarTodos(){
+		return repo.findAll();
+	}
+
+	public Postagem buscar(int id) {
+		Optional<Postagem> obj = repo.findById(id);
+		return obj.orElseThrow(() -> new ObjetoNaoEncontrado(
+				"Objeto não encontrado! Id: " + id + ", Tipo: " + Postagem.class.getName()));
+	}
+	
+	public Postagem salvar(Postagem obj) {
+		obj.setId(null);
+		return repo.save(obj);
+	}
+	
+	public void deletar(int id) {
+		buscar(id);
+		repo.deleteById(id);
+	}
+	
+	public Postagem editar(Postagem obj) {
+		Postagem newObj = buscar(obj.getId());
+		modificar(newObj, obj);
+		repo.save(newObj);
+	}
+	
+	public void modificar(Postagem newObj, Postagem obj) {
+		newObj.setAutor(obj.getAutor());
+		newObj.setComentarios(obj.getComentarios());
+		newObj.setTexto(obj.getTexto());
+		newObj.setTitulo(obj.getTitulo());
+		
+	}
+}
