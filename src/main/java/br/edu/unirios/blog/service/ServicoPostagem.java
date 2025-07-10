@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import br.edu.unirios.blog.entity.Postagem;
 import br.edu.unirios.blog.entity.interfaces.RepositorioPostagem;
 
+
 @Service
 public class ServicoPostagem {
 	
@@ -21,8 +22,7 @@ public class ServicoPostagem {
 
 	public Postagem buscar(int id) {
 		Optional<Postagem> obj = repo.findById(id);
-		return obj.orElseThrow(() -> new ObjetoNaoEncontrado(
-				"Objeto não encontrado! Id: " + id + ", Tipo: " + Postagem.class.getName()));
+		return obj.orElse(null);
 	}
 	
 	public Postagem salvar(Postagem obj) {
@@ -38,7 +38,8 @@ public class ServicoPostagem {
 	public Postagem editar(Postagem obj) {
 		Postagem newObj = buscar(obj.getId());
 		modificar(newObj, obj);
-		repo.save(newObj);
+		return repo.save(newObj);
+		
 	}
 	
 	public void modificar(Postagem newObj, Postagem obj) {
